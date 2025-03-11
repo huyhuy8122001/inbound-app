@@ -11,7 +11,8 @@ from livekit.agents import (
     metrics,
 )
 from livekit.agents.pipeline import VoicePipelineAgent
-from livekit.plugins import cartesia, openai, deepgram, silero, turn_detector
+from livekit.plugins import cartesia, openai, deepgram, silero, turn_detector, elevenlabs
+from livekit.plugins.elevenlabs import tts
 
 
 load_dotenv(dotenv_path=".env.local")
@@ -45,9 +46,39 @@ async def entrypoint(ctx: JobContext):
     # https://docs.livekit.io/agents/plugins
     agent = VoicePipelineAgent(
         vad=ctx.proc.userdata["vad"],
-        stt=deepgram.STT(),
+        stt=deepgram.stt.STT(
+            model="nova-2",
+            # model="whisper-medium",
+            interim_results=True,
+            smart_format=True,
+            punctuate=True,
+            filler_words=True,
+            profanity_filter=False,
+            # keywords=[("LiveKit", 1.5)],
+            language="vi",
+        ),
         llm=openai.LLM(model="gpt-4o-mini"),
-        tts=cartesia.TTS(),
+        tts=elevenlabs.tts.TTS(
+            model="eleven_turbo_v2_5",
+            voice=elevenlabs.tts.Voice(
+            id="bWvs6tS24bngxwBo8QJy",
+            name="Tố Uyên",
+            #### noted
+            # id="HAAKLJlaJeGl18MKHYeg",
+            # name="Trang",
+            category="premade",
+            settings=elevenlabs.tts.VoiceSettings(
+                stability=0.71,
+                similarity_boost=0.5,
+                style=0.0,
+                use_speaker_boost=True
+                ),
+            ),
+            language="vi",
+            # streaming_latency=3,
+            # enable_ssml_parsing=False,
+            # chunk_length_schedule=[80, 120, 200, 260],
+        ),
         turn_detector=turn_detector.EOUModel(),
         # minimum delay for endpointing, used when turn detector believes the user is done with their turn
         min_endpointing_delay=0.5,
@@ -74,5 +105,7 @@ if __name__ == "__main__":
         WorkerOptions(
             entrypoint_fnc=entrypoint,
             prewarm_fnc=prewarm,
+            # giving this agent a name of: "inbound-agent"
+            agent_name="inbound-agent",
         ),
     )

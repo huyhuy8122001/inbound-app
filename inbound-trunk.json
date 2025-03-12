@@ -1,6 +1,7 @@
 {
   "trunk": {
     "name": "SBC inbound trunk",
-    "allowed_addresses": ["210.211.108.3"]
+    "allowed_addresses": ["210.211.108.3"],
+    "numbers": ["+84996674699"]
   }
 }

@@ -27,9 +27,9 @@ async def entrypoint(ctx: JobContext):
     initial_ctx = llm.ChatContext().append(
         role="system",
         text=(
-            "You are a voice assistant created by LiveKit. Your interface with users will be voice. "
-            "You should use short and concise responses, and avoiding usage of unpronouncable punctuation. "
-            "You were created as a demo to showcase the capabilities of LiveKit's agents framework."
+            """
+            Bạn là trợ lý giọng nói của ePacific Telecom. Bạn giao tiếp với khách hàng qua giọng nói và cần đưa ra câu trả lời ngắn gọn, rõ ràng, tránh sử dụng dấu câu khó phát âm. Bạn được tạo ra để giới thiệu khả năng của các giải pháp CCALL, Eone, AI Agent do ePacific Telecom cung cấp.
+            """
         ),
     )
 
@@ -61,8 +61,10 @@ async def entrypoint(ctx: JobContext):
         tts=elevenlabs.tts.TTS(
             model="eleven_turbo_v2_5",
             voice=elevenlabs.tts.Voice(
-            id="bWvs6tS24bngxwBo8QJy",
-            name="Tố Uyên",
+            id="mvYbQ2cRw9pAg9c9WOAc",
+            name="Vietlike",
+            # id="bWvs6tS24bngxwBo8QJy",
+            # name="Tố Uyên",
             #### noted
             # id="HAAKLJlaJeGl18MKHYeg",
             # name="Trang",
@@ -97,7 +99,7 @@ async def entrypoint(ctx: JobContext):
     agent.start(ctx.room, participant)
 
     # The agent should be polite and greet the user when it joins :)
-    await agent.say("Hey, how can I help you today?", allow_interruptions=True)
+    await agent.say("Xin chào quý khách, tôi là nhân viên số bên ePacific Telecom. Tôi có thể giúp gì cho bạn ngày hôm nay?", allow_interruptions=True)
 
 
 if __name__ == "__main__":
@@ -106,6 +108,6 @@ if __name__ == "__main__":
             entrypoint_fnc=entrypoint,
             prewarm_fnc=prewarm,
             # giving this agent a name of: "inbound-agent"
-            agent_name="inbound-agent",
+            agent_name="inbound-agent-test",
         ),
     )
